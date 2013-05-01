@@ -7,6 +7,7 @@ package hordes.mod.plugins.evolvedmobs.implementation.targets;
 import hordes.mod.plugins.evolvedmobs.api.EvolvedMob;
 import hordes.mod.plugins.evolvedmobs.api.targets.EvolvedMobTarget;
 import hordes.mod.plugins.evolvedmobs.api.targets.TargetPriority;
+import hordes.mod.plugins.evolvedmobs.api.targets.TargetState;
 
 /**
  *
@@ -18,6 +19,7 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     protected boolean paused = false;
     protected boolean stopped = false;
     protected boolean initialized = false;
+    protected TargetState state = TargetState.IN_QUEUE;
     
     protected TargetPriority priority = TargetPriority.LOW;
     protected EvolvedMob evolvedMob;
@@ -26,6 +28,7 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     public void launch() {
         if(this.paused == false && this.stopped == false){
             this.launched = true;
+            this.state = TargetState.RUNNING;
         }
     }
 
@@ -33,6 +36,7 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     public void pause() {
         if(this.launched == true && this.stopped == false){
             this.paused = true;
+            this.state = TargetState.PAUSED;
         }
     }
 
@@ -40,12 +44,18 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     public void resume() {
         if(this.paused == true && this.stopped == false){
             this.paused = false;
+            this.state = TargetState.RUNNING;
         }
     }
 
     @Override
     public void stop() {
         this.stopped = true;
+        if(this.isCompleted()){
+            this.state = TargetState.COMPLETED;
+        }else{
+            this.state = TargetState.CANCELLED;
+        }
     }
 
     @Override
@@ -94,6 +104,11 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     }
     
     @Override
+    public TargetState getState() {
+        return this.state;
+    }
+    
+    @Override
     public void init() {
         throw new UnsupportedOperationException("The init() method should be overrided by subclasses.");
     }
@@ -101,6 +116,11 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     @Override
     public void update() {
         throw new UnsupportedOperationException("The update() method should be overrided by subclasses.");
+    }
+    
+    @Override
+    public boolean isCompleted() {
+        throw new UnsupportedOperationException("The isFinished() method should be overrided by subclasses.");
     }
     
 }

@@ -2,8 +2,11 @@ package hordes.mod.core.game;
 
 import hordes.mod.core.game.managers.HordesMobsManager;
 import hordes.mod.core.game.managers.HordesZombiesManager;
+import hordes.mod.plugins.evolvedmobs.implementation.EvolvedMobPlugin;
 import hordes.mod.plugins.timers.Timer;
 import hordes.mod.plugins.timers.TimersListener;
+import hordes.mod.utils.MinecraftArea;
+import java.util.logging.Logger;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,15 +17,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class HordesPlugin extends JavaPlugin {
     
     protected HordesGame hordesGame;
+    public static Logger logger;
     
     @Override
     public void onEnable(){
+        
+        //Debug
+    	HordesPlugin.logger = this.getLogger();
         
         //Configuration
         this.saveDefaultConfig();
         
         this.hordesGame = new HordesGame(this);
         this.hordesGame.start();
+        
+        //EvolvedMobPlugin configuration        
+        EvolvedMobPlugin.locationReached = new MinecraftArea(this.getConfig().getConfigurationSection("location_reached").getValues(false));
         
         
         // Register our events

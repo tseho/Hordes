@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package hordes.mod.core.game.managers;
+package hordes.mod.utils;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,12 +11,38 @@ import org.bukkit.World;
  *
  * @author Tseho
  */
-public class HordesLocationManager {
+public class MinecraftLocations {
     
-    public static int calculateDistance(Location p1, Location p2){
+    public static boolean isReached(Location p1, Location p2){
+        return isReached(p1, p2, 0, 0, 0);
+    }
+    
+    public static boolean isReached(Location p1, Location p2, MinecraftArea area){
+        return isReached(p1, p2, area.getX(), area.getY(), area.getZ());
+    }
+    
+    public static boolean isReached(Location p1, Location p2, int x, int y, int z){
+        if(Location.locToBlock(Math.sqrt((p1.getX() - p2.getX()) * (p1.getX() - p2.getX()))) <= x &&
+                Location.locToBlock(Math.sqrt((p1.getY() - p2.getY()) * (p1.getY() - p2.getY()))) <= y &&
+                Location.locToBlock(Math.sqrt((p1.getZ() - p2.getZ()) * (p1.getZ() - p2.getZ()))) <= z){
+            
+            return true;
+        }
+        return false;
+    }
+    
+    public static int calculate2dDistance(Location p1, Location p2){
         return Location.locToBlock(Math.sqrt(
             (p1.getX() - p2.getX()) * (p1.getX() - p2.getX()) + 
             (p1.getZ() - p2.getZ()) * (p1.getZ() - p2.getZ())
+        ));
+    }
+    
+    public static int calculate3dDistance(Location p1, Location p2){
+        return Location.locToBlock(Math.sqrt(
+            (p1.getX() - p2.getX()) * (p1.getX() - p2.getX()) + 
+            (p1.getZ() - p2.getZ()) * (p1.getZ() - p2.getZ()) +
+            (p1.getY() - p2.getY()) * (p1.getY() - p2.getY())
         ));
     }
     

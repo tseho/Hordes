@@ -1,20 +1,28 @@
 ###################################
+# HORDES
+###################################
+
 # List of mobs allowed to spawn other than Zombie
 # Example :
 # mobs_allowed: [Cow, Pig]
-###################################
 
 mobs_allowed: [Cow, Chicken, Pig, Wolf]
 
-###################################
 # Difficulty level (for the number of zombies only)
 # 0 : peacefull
 # 1 : easy
 # 2 : hard
 # 3 : extreme
-###################################
 
 difficulty: 1
 
-#World name
 world_name: world
+
+###################################
+# EvolvedMobs
+###################################
+
+location_reached:
+    x: 1
+    y: 0
+    z: 1

@@ -34,9 +34,13 @@ public interface EvolvedMobTarget {
     
     public Boolean isInitialized();
     
+    public TargetState getState();
+    
     public void init();
     
     public void update();
+    
+    public boolean isCompleted();
     
     
     /*

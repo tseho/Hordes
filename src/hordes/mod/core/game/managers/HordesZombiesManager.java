@@ -4,11 +4,13 @@
  */
 package hordes.mod.core.game.managers;
 
+import hordes.mod.utils.MinecraftLocations;
 import hordes.mod.core.game.HordesPlugin;
 import de.ntcomputer.minecraft.controllablemobs.api.ControllableMob;
 import de.ntcomputer.minecraft.controllablemobs.api.ControllableMobs;
 import hordes.mod.core.game.HordesWave;
 import hordes.mod.plugins.evolvedmobs.api.targets.TargetPriority;
+import hordes.mod.plugins.evolvedmobs.implementation.EvolvedMobPlugin;
 import hordes.mod.plugins.evolvedmobs.implementation.EvolvedZombie;
 import hordes.mod.plugins.evolvedmobs.implementation.targets.EvolvedMobTargetLocation;
 import hordes.mod.plugins.timers.TimerEvent;
@@ -78,8 +80,7 @@ public class HordesZombiesManager implements Listener {
             
             //Check if the zombie reached the balise
             Location zombieLocation = evolvedZombie.getEntity().getLocation();
-            if(HordesLocationManager.calculateDistance(baliseLocation, zombieLocation) <= 1 
-                    && baliseLocation.getBlockY() == zombieLocation.getBlockY()){
+            if(MinecraftLocations.isReached(baliseLocation, zombieLocation, EvolvedMobPlugin.locationReached)){
                 this.plugin.getLogger().log(Level.INFO, "A zombie reached the balise !");
                 this.plugin.getGame().reset();
                 break;
@@ -104,7 +105,7 @@ public class HordesZombiesManager implements Listener {
         if(event.getTimer().getName().equals(TIMER_EVOLVED_MOBS_UPDATE_TARGET)){
             for (Iterator<EvolvedZombie> it = this.zombies.iterator(); it.hasNext();) {
                 EvolvedZombie evolvedZombie = it.next();
-                if(evolvedZombie.getCurrentTarget() != null){
+                if(evolvedZombie.getCurrentTarget() != null && !evolvedZombie.getCurrentTarget().isStopped() && !evolvedZombie.getCurrentTarget().isPaused()){
                     evolvedZombie.getCurrentTarget().update();
                 }
             }
@@ -122,7 +123,7 @@ public class HordesZombiesManager implements Listener {
         while(this.plugin.getGame().getCurrentWave().getCreatedZombies() < maxZombies && numZombieCreationFailed < maxZombies){
             
             //Create a zombie at random location arround the balise
-            Location spawnZombie = HordesLocationManager.createRandomLocation(this.plugin.getGame().getWorld(), target, 40, 20);
+            Location spawnZombie = MinecraftLocations.createRandomLocation(this.plugin.getGame().getWorld(), target, 40, 20);
             //this.plugin.getLogger().log(Level.INFO, "New zombie at {0} {1} {2}", new Object[]{spawnZombie.getBlockX(), spawnZombie.getBlockY(), spawnZombie.getBlockZ()});
             Zombie addedZombie = (Zombie) this.plugin.getGame().getWorld().spawnEntity(spawnZombie, EntityType.ZOMBIE);
             
@@ -151,7 +152,8 @@ public class HordesZombiesManager implements Listener {
     
     protected void initializeZombie(EvolvedZombie evolvedZombie){
         //Adjust his health
-        evolvedZombie.getEntity().setMaxHealth(2);
+        evolvedZombie.getEntity().setMaxHealth(3);
+        evolvedZombie.getEntity().setHealth(3);
         //Add targets
         Location target = this.plugin.getGame().getBalisePosition();
         evolvedZombie.addTarget(new EvolvedMobTargetLocation(target, TargetPriority.HIGH));
