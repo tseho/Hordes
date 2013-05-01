@@ -1,0 +1,4 @@
+name: Hordes
+main: hordes.mod.core.game.HordesPlugin
+version: 1.0.0
+depend: [ControllableMobsAPI, Extra Events]

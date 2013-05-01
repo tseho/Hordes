@@ -1,0 +1,19 @@
+##############
+# Java
+##############
+
+lib/
+build.xml
+.classpath
+.project
+build/
+dist/
+
+##############
+# IDE
+##############
+
+nbproject/
+
+# Mac crap
+.DS_Store
