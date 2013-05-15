@@ -5,6 +5,7 @@
 package hordes.mod.plugins.evolvedmobs.implementation;
 
 import de.ntcomputer.minecraft.controllablemobs.api.ControllableMob;
+import hordes.mod.plugins.evolvedmobs.EvolvedMobPlugin;
 import hordes.mod.plugins.evolvedmobs.api.EvolvedMob;
 import hordes.mod.plugins.evolvedmobs.api.targets.EvolvedMobTarget;
 import hordes.mod.plugins.evolvedmobs.implementation.targets.EvolvedMobTargetNull;
@@ -22,12 +23,18 @@ public class EvolvedMobBase implements EvolvedMob{
     protected ControllableMob<LivingEntity> controllableMob;
     protected EvolvedMobTarget currentTarget;
     protected ArrayList<EvolvedMobTarget> targets;
+    protected ArrayList<String> permissions = new ArrayList<String>();
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	public EvolvedMobBase(ControllableMob controllableMob){
         this.controllableMob = controllableMob;
         this.targets = new ArrayList<EvolvedMobTarget>();
-        this.currentTarget = new EvolvedMobTargetNull();
+        this.currentTarget = new EvolvedMobTargetNull(this);
+        
+        ArrayList<String> configPermissions = (ArrayList<String>) EvolvedMobPlugin.mobsPermissions.get(this.controllableMob.getEntity().getType().getName());
+        if(configPermissions != null){
+            this.permissions.addAll(configPermissions);
+        }
     }
 
     @Override
@@ -85,22 +92,42 @@ public class EvolvedMobBase implements EvolvedMob{
 
     @Override
     public boolean addTarget(EvolvedMobTarget target) {
-        target.setEvolvedMob(this);
+        //target.setEvolvedMob(this);
         return this.targets.add(target);
     }
     
     @Override
     public boolean addTargets(Collection<EvolvedMobTarget> targets) {
-        for (Iterator<EvolvedMobTarget> it = targets.iterator(); it.hasNext();) {
-            EvolvedMobTarget target = it.next();
-            target.setEvolvedMob(this);
-        }
+        //for (Iterator<EvolvedMobTarget> it = targets.iterator(); it.hasNext();) {
+        //    EvolvedMobTarget target = it.next();
+        //    target.setEvolvedMob(this);
+        //}
         return this.targets.addAll(targets);
     }
     
     @Override
     public void clearTargets() {
         this.targets.clear();
+    }
+    
+    @Override
+    public boolean isAllowedTo(String permission){
+        return this.permissions.contains(permission);
+    }
+
+    @Override
+    public void setPermissions(ArrayList<String> permissions) {
+        this.permissions = permissions;
+    }
+
+    @Override
+    public void addPermission(String permission) {
+        this.permissions.add(permission);
+    }
+
+    @Override
+    public void removePermission(String permission) {
+        this.permissions.remove(permission);
     }
     
     @Override

@@ -23,6 +23,17 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     
     protected TargetPriority priority = TargetPriority.LOW;
     protected EvolvedMob evolvedMob;
+    
+    public static final String MOVE = "move";
+    public static final String ATTACK_PLAYER = "attack_player";
+    public static final String ATTACK_MOB = "attack_mob";
+    public static final String BREAK_BLOCK = "break_block";
+    public static final String PLACE_BLOCK = "place_block";
+    public static final String USE_OBJECT = "use_object";
+    
+    public EvolvedMobTargetBase(EvolvedMob evolvedMob){
+        this.evolvedMob = evolvedMob;
+    }
 
     @Override
     public void launch() {
@@ -82,11 +93,6 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     public TargetPriority getPriority() {
         return this.priority;
     }
-    
-    @Override
-    public void setEvolvedMob(EvolvedMob evolvedMob) {
-        this.evolvedMob = evolvedMob;
-    }
 
     @Override
     public EvolvedMob getEvolvedMob() {
@@ -121,6 +127,11 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     @Override
     public boolean isCompleted() {
         throw new UnsupportedOperationException("The isFinished() method should be overrided by subclasses.");
+    }
+
+    @Override
+    public boolean isAllowed() {
+        throw new UnsupportedOperationException("The isAllowed() method should be overrided by subclasses.");
     }
     
 }

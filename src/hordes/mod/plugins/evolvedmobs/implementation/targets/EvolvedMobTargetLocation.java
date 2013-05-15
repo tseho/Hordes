@@ -1,12 +1,12 @@
 package hordes.mod.plugins.evolvedmobs.implementation.targets;
 
 import de.ntcomputer.minecraft.controllablemobs.api.actions.ActionState;
-import de.ntcomputer.minecraft.controllablemobs.api.actions.ActionType;
 import de.ntcomputer.minecraft.controllablemobs.api.actions.ControllableMobAction;
 import hordes.mod.core.game.HordesPlugin;
 import hordes.mod.plugins.evolvedmobs.api.targets.TargetPriority;
 import hordes.mod.plugins.evolvedmobs.api.targets.TargetState;
-import hordes.mod.plugins.evolvedmobs.implementation.EvolvedMobPlugin;
+import hordes.mod.plugins.evolvedmobs.EvolvedMobPlugin;
+import hordes.mod.plugins.evolvedmobs.api.EvolvedMob;
 import hordes.mod.utils.MinecraftLocations;
 import java.util.logging.Level;
 import org.bukkit.Location;
@@ -21,11 +21,13 @@ public class EvolvedMobTargetLocation extends EvolvedMobTargetBase{
     protected ControllableMobAction action;
     private boolean completed = false;
     
-    public EvolvedMobTargetLocation(Location location) {
+    public EvolvedMobTargetLocation(EvolvedMob evolvedMob, Location location) {
+        super(evolvedMob);
         this.location = location;
     }
-
-    public EvolvedMobTargetLocation(Location location, TargetPriority priority) {
+    
+    public EvolvedMobTargetLocation(EvolvedMob evolvedMob, Location location, TargetPriority priority) {
+        super(evolvedMob);
         this.location = location;
         this.priority = priority;
     }
@@ -76,5 +78,10 @@ public class EvolvedMobTargetLocation extends EvolvedMobTargetBase{
             HordesPlugin.logger.log(Level.INFO, "Target not reached.");
             return false;
         }
+    }
+    
+    @Override
+    public boolean isAllowed() {
+        return this.evolvedMob.isAllowedTo(MOVE);
     }
 }

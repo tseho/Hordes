@@ -22,7 +22,13 @@ world_name: world
 # EvolvedMobs
 ###################################
 
+# Distance for reach a location
 location_reached:
     x: 1
     y: 0
     z: 1
+
+# Configure what evolved mobs are allowed to do
+# permissions : move, attack_player, attack_mob, break_block, place_block, use_object
+mobs_permissions:
+    Zombie: [move]

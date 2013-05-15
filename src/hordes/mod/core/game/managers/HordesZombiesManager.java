@@ -10,7 +10,7 @@ import de.ntcomputer.minecraft.controllablemobs.api.ControllableMob;
 import de.ntcomputer.minecraft.controllablemobs.api.ControllableMobs;
 import hordes.mod.core.game.HordesWave;
 import hordes.mod.plugins.evolvedmobs.api.targets.TargetPriority;
-import hordes.mod.plugins.evolvedmobs.implementation.EvolvedMobPlugin;
+import hordes.mod.plugins.evolvedmobs.EvolvedMobPlugin;
 import hordes.mod.plugins.evolvedmobs.implementation.EvolvedZombie;
 import hordes.mod.plugins.evolvedmobs.implementation.targets.EvolvedMobTargetLocation;
 import hordes.mod.plugins.timers.TimerEvent;
@@ -46,8 +46,6 @@ public class HordesZombiesManager implements Listener {
     public HordesZombiesManager(HordesPlugin plugin) {
         this.plugin = plugin;
         this.zombies = new ArrayList<EvolvedZombie>();
-        
-        
     }
     
     @EventHandler(priority = EventPriority.HIGH)
@@ -156,7 +154,7 @@ public class HordesZombiesManager implements Listener {
         evolvedZombie.getEntity().setHealth(3);
         //Add targets
         Location target = this.plugin.getGame().getBalisePosition();
-        evolvedZombie.addTarget(new EvolvedMobTargetLocation(target, TargetPriority.HIGH));
+        evolvedZombie.addTarget(new EvolvedMobTargetLocation(evolvedZombie, target, TargetPriority.HIGH));
     }
     
     protected void removeZombie(Zombie entity){

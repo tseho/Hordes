@@ -26,8 +26,6 @@ public interface EvolvedMobTarget {
     
     public TargetPriority getPriority();
     
-    public void setEvolvedMob(EvolvedMob evolvedMob);
-    
     public EvolvedMob getEvolvedMob();
     
     public void setInitialized(Boolean initialized);
@@ -41,6 +39,8 @@ public interface EvolvedMobTarget {
     public void update();
     
     public boolean isCompleted();
+    
+    public boolean isAllowed();
     
     
     /*
