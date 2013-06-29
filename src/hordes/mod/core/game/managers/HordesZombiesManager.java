@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package hordes.mod.core.game.managers;
 
 import hordes.mod.utils.MinecraftLocations;

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package hordes.mod.plugins.timers;
 
 import org.bukkit.event.Cancellable;
