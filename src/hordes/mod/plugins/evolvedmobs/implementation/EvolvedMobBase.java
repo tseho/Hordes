@@ -22,7 +22,7 @@ public class EvolvedMobBase implements EvolvedMob{
     protected ArrayList<String> permissions = new ArrayList<String>();
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public EvolvedMobBase(ControllableMob controllableMob){
+    public EvolvedMobBase(ControllableMob controllableMob){
         this.controllableMob = controllableMob;
         this.targets = new ArrayList<EvolvedMobTarget>();
         this.currentTarget = new EvolvedMobTargetNull(this);
