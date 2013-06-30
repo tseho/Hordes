@@ -23,7 +23,7 @@ public final class HordesPlugin extends JavaPlugin {
     public static Logger logger;
     
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void onEnable(){
         
         //Debug
