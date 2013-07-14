@@ -111,12 +111,12 @@ public class EvolvedMobTargetBase implements EvolvedMobTarget {
     }
     
     @Override
-    public void init() {
+    public void onInit() {
         throw new UnsupportedOperationException("The init() method should be overrided by subclasses.");
     }
 
     @Override
-    public void update() {
+    public void onUpdate() {
         throw new UnsupportedOperationException("The update() method should be overrided by subclasses.");
     }
     

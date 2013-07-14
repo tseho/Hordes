@@ -10,31 +10,67 @@ import org.bukkit.block.Block;
  */
 public class EvolvedMobTargetBlockPlace extends EvolvedMobTargetBase{
     
-    protected Block block;
-    protected Block position;
+    protected Block blockToPick;
+    protected Block targetBlock;
+    protected boolean isPicked = false;
+    protected boolean aborted = false;
     
-    public EvolvedMobTargetBlockPlace(EvolvedMob evolvedMob, Block block, Block position) {
+    public EvolvedMobTargetBlockPlace(EvolvedMob evolvedMob, Block targetBlock) {
         super(evolvedMob);
-        this.block = block;
-        this.position = position;
+        this.targetBlock = targetBlock;
     }
-
-    public EvolvedMobTargetBlockPlace(EvolvedMob evolvedMob, Block block, Block position, TargetPriority priority) {
+    
+    public EvolvedMobTargetBlockPlace(EvolvedMob evolvedMob, Block targetBlock, TargetPriority priority) {
         super(evolvedMob);
-        this.block = block;
-        this.position = position;
+        this.targetBlock = targetBlock;
         this.priority = priority;
     }
     
-    /*
+    public EvolvedMobTargetBlockPlace(EvolvedMob evolvedMob, Block blockToPick, Block targetBlock) {
+        super(evolvedMob);
+        this.blockToPick = blockToPick;
+        this.targetBlock = targetBlock;
+    }
+
+    public EvolvedMobTargetBlockPlace(EvolvedMob evolvedMob, Block blockToPick, Block targetBlock, TargetPriority priority) {
+        super(evolvedMob);
+        this.blockToPick = blockToPick;
+        this.targetBlock = targetBlock;
+        this.priority = priority;
+    }
+    
     @Override
-    public void init() {
+    public void onInit() {
+        //Useless, we can't control how they manage pickup items
+        //this.getEvolvedMob().getEntity().setCanPickupItems(true);
+        
+        if(this.blockToPick == null){
+            this.blockToPick = this.getRandomBlockToPick();
+        }else if(this.blockToPick.isEmpty()){
+            this.aborted = true;
+        }
+    }
+
+    @Override
+    public void onUpdate() {
         
     }
     
     @Override
-    public void update(){
-        
+    public boolean isCompleted() {
+        if(this.aborted){
+            return true;
+        }
+        return false;
     }
-    */
+
+    @Override
+    public boolean isAllowed() {
+        return this.evolvedMob.isAllowedTo(PLACE_BLOCK);
+    }
+    
+    protected Block getRandomBlockToPick(){
+        
+        return null;
+    }
 }

@@ -15,12 +15,12 @@ public class EvolvedMobTargetNull extends EvolvedMobTargetBase{
     }
     
     @Override
-    public void init() {
+    public void onInit() {
         
     }
     
     @Override
-    public void update(){
+    public void onUpdate(){
         
     }
 }

@@ -36,5 +36,5 @@ public interface EvolvedMob {
     
     public void removePermission(String permission);
     
-    public void update();
+    public void onUpdate();
 }

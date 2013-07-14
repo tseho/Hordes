@@ -1,14 +1,18 @@
 package hordes.mod.plugins.evolvedmobs.implementation;
 
 import de.ntcomputer.minecraft.controllablemobs.api.ControllableMob;
+import static hordes.mod.core.game.HordesPlugin.TIMER_EVOLVED_MOBS_UPDATE_TARGET_SELECTION;
+import static hordes.mod.core.game.HordesPlugin.TIMER_EVOLVED_MOBS_UPDATE_TARGET;
 import hordes.mod.plugins.evolvedmobs.EvolvedMobPlugin;
 import hordes.mod.plugins.evolvedmobs.api.EvolvedMob;
 import hordes.mod.plugins.evolvedmobs.api.targets.EvolvedMobTarget;
 import hordes.mod.plugins.evolvedmobs.implementation.targets.EvolvedMobTargetNull;
+import hordes.mod.plugins.timers.TimerEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
 
 /**
  *
@@ -27,10 +31,11 @@ public class EvolvedMobBase implements EvolvedMob{
         this.targets = new ArrayList<EvolvedMobTarget>();
         this.currentTarget = new EvolvedMobTargetNull(this);
         
-        ArrayList<String> configPermissions = (ArrayList<String>) EvolvedMobPlugin.mobsPermissions.get(this.controllableMob.getEntity().getType().getName());
-        if(configPermissions != null){
-            this.permissions.addAll(configPermissions);
-        }
+        //TODO resolve it
+//        ArrayList<String> configPermissions = (ArrayList<String>) EvolvedMobPlugin.mobsPermissions.get(this.controllableMob.getEntity().getType().getName());
+//        if(configPermissions != null){
+//            this.permissions.addAll(configPermissions);
+//        }
     }
 
     @Override
@@ -55,9 +60,15 @@ public class EvolvedMobBase implements EvolvedMob{
             this.currentTarget.pause();
         }
         
+        //If new target is null
+        if(target == null){
+            this.currentTarget = null;
+            return;
+        }
+        
         //Initialize new target
         if(!target.isInitialized()){
-            target.init();
+            target.onInit();
         }
         if(!target.isLaunched()){
             target.launch();
@@ -71,33 +82,40 @@ public class EvolvedMobBase implements EvolvedMob{
 
     @Override
     public EvolvedMobTarget updateCurrentTargetSelection() {
+        
+        EvolvedMobTarget previousTarget = this.getCurrentTarget();
+        EvolvedMobTarget newTarget = null;
+        
         for (Iterator<EvolvedMobTarget> it = targets.iterator(); it.hasNext();) {
             EvolvedMobTarget target = it.next();
             
+            //If target is stopped or completed, we remove it
             if(target.isStopped()){
                 it.remove();
                 continue;
             }
             
+            //If target has highter priority than current, we launch it
             if(this.getCurrentTarget() == null || target.getPriority().isHighterThan(this.getCurrentTarget().getPriority())){
-                this.setCurrentTarget(target);
+                //If previousTarget is paused, we force switch to another
+                if(!previousTarget.isPaused() || (previousTarget.isPaused() && !previousTarget.equals(target))){
+                    newTarget = target;
+                }
             }
         }
+        
+        this.setCurrentTarget(newTarget);
+        
         return this.getCurrentTarget();
     }
 
     @Override
     public boolean addTarget(EvolvedMobTarget target) {
-        //target.setEvolvedMob(this);
         return this.targets.add(target);
     }
     
     @Override
     public boolean addTargets(Collection<EvolvedMobTarget> targets) {
-        //for (Iterator<EvolvedMobTarget> it = targets.iterator(); it.hasNext();) {
-        //    EvolvedMobTarget target = it.next();
-        //    target.setEvolvedMob(this);
-        //}
         return this.targets.addAll(targets);
     }
     
@@ -127,8 +145,26 @@ public class EvolvedMobBase implements EvolvedMob{
     }
     
     @Override
-    public void update() {
+    public void onUpdate() {
         throw new UnsupportedOperationException("The update() method should be overrided by subclasses.");
+    }
+    
+    @EventHandler
+    public void onTimer(TimerEvent event){
+        
+        if(event.getTimer().getName().equals(TIMER_EVOLVED_MOBS_UPDATE_TARGET_SELECTION)){
+            this.updateCurrentTargetSelection();
+        }
+        
+        if(event.getTimer().getName().equals(TIMER_EVOLVED_MOBS_UPDATE_TARGET)){
+            if(this.getCurrentTarget() != null && !this.getCurrentTarget().isStopped() && this.getCurrentTarget().isPaused()){
+                //If current target is paused, we switch to another
+                this.updateCurrentTargetSelection();
+            }else if(this.getCurrentTarget() != null && !this.getCurrentTarget().isStopped() && !this.getCurrentTarget().isPaused()){
+                //If current target is not stopped and not paused, we fire update event on it
+                this.getCurrentTarget().onUpdate();
+            }
+        }
     }
     
 }

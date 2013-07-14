@@ -11,6 +11,4 @@ public class EvolvedMobPlugin {
     
     public static MinecraftArea locationReached;
     
-    public static Map<String, Object> mobsPermissions;
-    
 }

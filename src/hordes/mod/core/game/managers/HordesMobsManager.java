@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -40,7 +39,7 @@ public class HordesMobsManager implements Listener {
         if(!this.getListAllowedMobs().contains(event.getEntityType().getName())){
             event.setCancelled(true);
         }
-        //this.plugin.getLogger().log(Level.INFO, "Spawn : {0}", new Object[]{event.getEntityType().getName()});
+        //HordesPlugin.logger.log(LoggerLevel.DEBUG, "Spawn : {0}", new Object[]{event.getEntityType().getName()});
     }
     
     protected List<String> getListAllowedMobs(){
@@ -57,7 +56,7 @@ public class HordesMobsManager implements Listener {
             this.allowedMobs.add(nameCleaned);
         }
         
-        this.plugin.getLogger().log(Level.INFO, "Allowed mobs : {0}", Arrays.toString(this.getListAllowedMobs().toArray()));
+        //HordesPlugin.logger.log(LoggerLevel.INFO, "Allowed mobs : {0}", Arrays.toString(this.getListAllowedMobs().toArray()));
         
         //Add zombie if not exists
         if(!this.allowedMobs.contains("Zombie")){
@@ -92,6 +91,6 @@ public class HordesMobsManager implements Listener {
             entity.remove();
             numKills++;
         }
-        plugin.getLogger().log(Level.INFO, "{0} mobs killed", numKills);
+        //HordesPlugin.logger.log(LoggerLevel.DEBUG, "{0} mobs killed", numKills);
     }
 }

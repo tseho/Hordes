@@ -1,62 +1,79 @@
 package hordes.mod.core.game;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.entity.Entity;
 
 /**
- *
+ * Hordes wave. Each wave has his own zombies.
  * @author Tseho
  */
 public class HordesWave {
-    public static final int WAVE_CREATED = 0;
-    public static final int WAVE_IN_PROGRESS = 1;
-    public static final int WAVE_ENDED=  2;
     
-    public static final int CAUSE_ZOMBIES_KILLED = 0;
-    public static final int CAUSE_ABORTED = 1;
+    public static enum WaveState { CREATED, IN_PROGRESS, ENDED;}
+    public static enum WaveEndReason { ALL_ZOMBIES_KILLED, WAVE_ABORTED;}
+    public static enum WaveDifficulty{ PEACEFULL,EASY,HARD,EXTREME;}
     
-    protected int number = 0;
+    protected int waveNum = 0;
     protected int playersOnWaveBegin = 0;
     protected int zombiesCreated = 0;
     protected int zombiesKilled = 0;
-    protected int state = 0;
-    protected int difficulty = 0;
-    protected Logger logger;
+    protected WaveState state;
+    protected WaveDifficulty difficulty;
     protected ArrayList<Entity> zombies;
     
-    public HordesWave(int number, int playersOnWaveBegin, int difficulty, Logger logger){
-        this.number = number;
+    public HordesWave(int waveNum, int playersOnWaveBegin, WaveDifficulty difficulty){
+        this.waveNum = waveNum;
         this.playersOnWaveBegin = playersOnWaveBegin;
         this.difficulty = difficulty;
-        this.state = HordesWave.WAVE_CREATED;
-        this.logger = logger;
+        this.state = WaveState.CREATED;
         this.zombies = new ArrayList<Entity>();
     }
     
+    /**
+     * Launch the wave
+     */
     public void launchWave(){
-        this.state = HordesWave.WAVE_IN_PROGRESS;
+        this.state = WaveState.IN_PROGRESS;
     }
     
+    /**
+     * Gets the number of zombies alives from this wave
+     * @return Zombies alives quantity
+     */
     public int getZombiesAlives() {
-        this.updateZombies();
+        this.updateZombiesKilledCounter();
         return this.zombiesCreated - this.zombiesKilled;
     }
     
+    /**
+     * Gets the number of zombies created by this wave
+     * @return Zombies created quantity
+     */
     public int getCreatedZombies(){
         return this.zombiesCreated;
     }
     
+    /**
+     * Gets the number of zombies killed during this wave
+     * @return Zombies killed quantity
+     */
     public int getKilledZombies(){
-        this.updateZombies();
+        this.updateZombiesKilledCounter();
         return this.zombiesKilled;
     }
     
+    /**
+     * Gets all zombies from this wave
+     * @return All Zombies
+     */
     public ArrayList<Entity> getZombies(){
         return this.zombies;
     }
     
+    /**
+     * Add a zombie to this wave
+     * @param zombie 
+     */
     public void addZombie(Entity zombie){
         if(this.zombiesCreated < this.getMaxZombies()){
             this.zombies.add(zombie);
@@ -64,7 +81,10 @@ public class HordesWave {
         }
     }
     
-    protected void updateZombies(){
+    /**
+     * Update the counter of zombies killed
+     */
+    protected void updateZombiesKilledCounter(){
         int tZombiesKilled = 0;
         int tZombiesAlives = 0;
         for (Entity zombie : zombies) {
@@ -82,35 +102,56 @@ public class HordesWave {
         }
     }
 
-    public int getNumber() {
-        return number;
+    /**
+     * Gets this wave number [1..n]
+     * @return Wave number
+     */
+    public int getWaveNum() {
+        return this.waveNum;
     }
 
+    /**
+     * Gets the number of players connected when the wave was launched
+     * @return 
+     */
     public int getPlayersOnWaveBegin() {
-        return playersOnWaveBegin;
+        return this.playersOnWaveBegin;
     }
 
-    public int getState() {
-        return state;
+    /**
+     * Gets the wave state
+     * @return state
+     */
+    public WaveState getState() {
+        return this.state;
     }
 
-    public void setState(int state) {
+    /**
+     * Set the wave state
+     * @param state 
+     */
+    public void setState(WaveState state) {
         this.state = state;
     }
     
-    public void setState(int state, int cause){
-        this.setState(state);
+    /**
+     * End this wave and indicate origin.
+     * @param cause 
+     */
+    public void end(WaveEndReason cause){
+        this.setState(WaveState.ENDED);
         
-        switch(cause){
-            case CAUSE_ZOMBIES_KILLED:
-                this.logger.log(Level.INFO, "Wave success : All zombies were killed.");
-                break;
-            case CAUSE_ABORTED:
-                this.logger.log(Level.INFO, "Wave aborted.");
-                break;
+        if(cause.equals(WaveEndReason.WAVE_ABORTED)){
+            //HordesPlugin.logger.log(LoggerLevel.INFO, "Wave aborted.");
+        }else if(cause.equals(WaveEndReason.ALL_ZOMBIES_KILLED)){
+            //HordesPlugin.logger.log(LoggerLevel.INFO, "Wave success : All zombies were killed.");
         }
     }
     
+    /**
+     * Gets the max number of zombies allowed for this wave.
+     * @return 
+     */
     public int getMaxZombies(){
         return 1;
         /*

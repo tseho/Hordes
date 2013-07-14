@@ -15,7 +15,7 @@ public class EvolvedZombie extends EvolvedMobBase{
     }
     
     @Override
-    public void update() {
+    public void onUpdate() {
         
     }
     
