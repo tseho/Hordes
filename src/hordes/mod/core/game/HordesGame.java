@@ -22,7 +22,7 @@ public class HordesGame {
     
     protected HordesPlugin plugin;
     protected HordesWave wave;
-    protected Location balisePosition;
+    protected Location beaconPosition;
     protected World world;
     protected GameState state;
     
@@ -64,8 +64,8 @@ public class HordesGame {
         this.mobsAllowed = (List<String>) config.get("mobs_allowed");
         HordesPlugin.logger.log(Level.INFO, "[{0}] Mobs allowed to spawn: {1}", new Object[]{this.name, this.mobsAllowed.toString()});
     
-        //TODO update world and set correct balise
-        this.balisePosition = new Location(this.world, -476, 64, 97);
+        //TODO update world and set correct beacon
+        this.beaconPosition = new Location(this.world, -476, 64, 97);
     }
     
     /**
@@ -116,7 +116,7 @@ public class HordesGame {
      * Init the game.
      * <ul>
      * <li> /!\ The world is not reseted, I hope it will be added soon</li>
-     * <li>Each player is teleported at balise position</li>
+     * <li>Each player is teleported at beacon position</li>
      * <li>All remaining zombies are killed</li>
      * </ul>
      * 
@@ -127,11 +127,11 @@ public class HordesGame {
         
         //TODO reset the world
         
-        //Move all connected players to the balise
+        //Move all connected players to the beacon
         List<Player> playersConnected = this.world.getPlayers();
         for (Iterator<Player> it = playersConnected.iterator(); it.hasNext();) {
             Player playerConnected = it.next();
-            boolean teleported = playerConnected.teleport(this.balisePosition);
+            boolean teleported = playerConnected.teleport(this.beaconPosition);
             if(!teleported){
                 //HordesPlugin.logger.log(LoggerLevel.WARNING, "Player {0} can't be teleported for new game.", playerConnected.getPlayerListName());
             }
@@ -201,11 +201,11 @@ public class HordesGame {
     }
     
     /**
-     * Gets this game balise position
-     * @return Balise position
+     * Gets this game beacon position
+     * @return Beacon position
      */
-    public Location getBalisePosition(){
-        return this.balisePosition;
+    public Location getBeaconPosition(){
+        return this.beaconPosition;
     }
     
     /**

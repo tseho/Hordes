@@ -61,7 +61,7 @@ public class HordesZombiesManager implements Listener {
             }
         }
         
-        Location baliseLocation = this.game.getBalisePosition();
+        Location beaconLocation = this.game.getBeaconPosition();
         
         for (Iterator<EvolvedZombie> it = this.zombies.iterator(); it.hasNext();) {
             EvolvedZombie evolvedZombie = it.next();
@@ -71,10 +71,10 @@ public class HordesZombiesManager implements Listener {
                 continue;
             }
             
-            //Check if the zombie reached the balise
+            //Check if the zombie reached the beacon
             Location zombieLocation = evolvedZombie.getEntity().getLocation();
-            if(MinecraftLocations.isReached(baliseLocation, zombieLocation, EvolvedMobPlugin.locationReached)){
-                //HordesPlugin.logger.log(LoggerLevel.INFO, "A zombie reached the balise !");
+            if(MinecraftLocations.isReached(beaconLocation, zombieLocation, EvolvedMobPlugin.locationReached)){
+                //HordesPlugin.logger.log(LoggerLevel.INFO, "A zombie reached the beacon !");
                 this.game.reset();
                 break;
             }
@@ -88,13 +88,13 @@ public class HordesZombiesManager implements Listener {
         int maxZombies = this.game.getCurrentWave().getMaxZombies();
         int numZombieCreationFailed = 0;
         
-        Location target = this.game.getBalisePosition();
+        Location target = this.game.getBeaconPosition();
         //HordesPlugin.logger.log(LoggerLevel.DEBUG, "Add {0} zombies ...", maxZombies);
         
         //For performance security, we can't try and fail to create a zombie more than the quantity we need
         while(this.game.getCurrentWave().getCreatedZombies() < maxZombies && numZombieCreationFailed < maxZombies){
             
-            //Create a zombie at random location arround the balise
+            //Create a zombie at random location arround the beacon
             Location spawnZombie = MinecraftLocations.createRandomLocation(this.game.getWorld(), target, 40, 20);
             //HordesPlugin.logger.log(LoggerLevel.DEBUG, "New zombie at {0} {1} {2}", new Object[]{spawnZombie.getBlockX(), spawnZombie.getBlockY(), spawnZombie.getBlockZ()});
             Zombie addedZombie = (Zombie) this.game.getWorld().spawnEntity(spawnZombie, EntityType.ZOMBIE);
@@ -127,7 +127,7 @@ public class HordesZombiesManager implements Listener {
         evolvedZombie.getEntity().setMaxHealth(3);
         evolvedZombie.getEntity().setHealth(3);
         //Add targets
-        Location target = this.game.getBalisePosition();
+        Location target = this.game.getBeaconPosition();
         evolvedZombie.addTarget(new EvolvedMobTargetLocation(evolvedZombie, target, TargetPriority.HIGH));
     }
     
